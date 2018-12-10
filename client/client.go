@@ -23,10 +23,11 @@ const (
 	ErrorDecodingError     = "ERROR_DECODING_ERROR"
 	ErrorDecodingResponse  = "ERROR_DECODING_RESPONSE"
 	ErrorMarshallingObject = "ERROR_MARSHALLING_OBJECT"
+	ErrorURL               = "ERROR_URL"
 )
 
 // ServiceFinder can find a service's base URL
-type ServiceFinder func(serviceName string, useTLS bool) (url.URL, error)
+type ServiceFinder func(serviceName string) (string, error)
 
 // BaseClient can do requests
 type BaseClient interface {
@@ -85,10 +86,16 @@ func (c *client) Do(ctx context.Context, method string, slug string, query url.V
 }
 
 func (c *client) MakeRequest(ctx context.Context, method string, slug string, query url.Values, headers http.Header, body io.Reader) (int, []byte, glitch.DataError) {
-	u, err := c.finder(c.serviceName, c.useTLS)
+	rawURL, err := c.finder(c.serviceName)
 	if err != nil {
 		return 0, nil, glitch.NewDataError(err, ErrorCantFind, "Error finding service")
 	}
+
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return 0, nil, glitch.NewDataError(err, ErrorURL, "Error parsing url from string")
+	}
+
 	u.Path = slug
 	u.RawQuery = query.Encode()
 

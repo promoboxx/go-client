@@ -62,9 +62,9 @@ func TestUnit_Do(t *testing.T) {
 	})))
 	defer testServer.Close()
 
-	finder := func(serviceName string, useTLS bool) (url.URL, error) {
-		u, err := url.Parse(testServer.URL)
-		return *u, err
+	finder := func(serviceName string) (string, error) {
+		return testServer.URL, nil
+
 	}
 
 	testcases := []testcase{
