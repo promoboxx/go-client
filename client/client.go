@@ -12,7 +12,7 @@ import (
 
 	"time"
 
-	"github.com/healthimation/go-glitch/glitch"
+	"github.com/promoboxx/go-glitch/glitch"
 )
 
 // Error codes

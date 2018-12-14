@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/healthimation/go-glitch/glitch"
+	"github.com/promoboxx/go-glitch/glitch"
 )
 
 func TestUnit_Do(t *testing.T) {
