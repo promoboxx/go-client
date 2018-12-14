@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/healthimation/go-glitch/glitch"
+	"github.com/promoboxx/go-glitch/glitch"
 )
 
 // ObjectToJSONReader will v to a io.Reader of the JSON representation of v
