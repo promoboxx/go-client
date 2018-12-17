@@ -50,3 +50,42 @@ func TestUnit_ObjectToJSONReader(t *testing.T) {
 	}
 
 }
+
+func TestUnit_PrefixRoute(t *testing.T) {
+	type testCase struct {
+		name                     string
+		serviceName              string
+		pathPrefix               string
+		appendServiceNameToRoute bool
+		route                    string
+		expected                 string
+	}
+
+	tests := []testCase{
+		testCase{
+			name:                     "base path",
+			serviceName:              "foo-service",
+			pathPrefix:               "foo-prefix",
+			appendServiceNameToRoute: true,
+			route:                    "foo-route",
+			expected:                 "foo-prefix/foo-service/foo-route",
+		},
+		testCase{
+			name:                     "base path",
+			serviceName:              "foo-service",
+			pathPrefix:               "foo-prefix",
+			appendServiceNameToRoute: false,
+			route:                    "foo-route",
+			expected:                 "foo-prefix/foo-route",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			route := PrefixRoute(tc.serviceName, tc.pathPrefix, tc.appendServiceNameToRoute, tc.route)
+			if route != tc.expected {
+				t.Fatalf("Expected (%s) did not match actual (%s)", tc.expected, route)
+			}
+		})
+	}
+}

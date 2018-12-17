@@ -21,11 +21,12 @@ func ObjectToJSONReader(v interface{}) (io.Reader, glitch.DataError) {
 	return bytes.NewBuffer(by), nil
 }
 
-// BuildRoute is a simple helper function to build the route for service to service communication
-func BuildRoute(slug string, appendServiceNameToRoute bool, pathPrefix string) string {
+// PrefixRoute is a simple helper function to build the route for service to service communicationfunc PrefixRoute(pathPrefix string, appendServiceNameToRoute bool, route string) string {
+func PrefixRoute(serviceName string, pathPrefix string, appendServiceNameToRoute bool, route string) string {
+	routePrefix := fmt.Sprintf("%s", pathPrefix)
 	if appendServiceNameToRoute {
-		return fmt.Sprintf("%s/%s", pathPrefix, slug)
+		routePrefix = fmt.Sprintf("%s/%s", pathPrefix, serviceName)
 	}
-
-	return slug
+	// TODO: make this more robust by normalizing slashes
+	return fmt.Sprintf("%s/%s", routePrefix, route)
 }
