@@ -30,6 +30,7 @@ const (
 type ServiceFinder func(serviceName string) (string, error)
 
 // BaseClient can do requests
+//go:generate mockgen -destination=./clientmock/client-mock.go -package=clientmock github.com/promoboxx/go-client/client BaseClient
 type BaseClient interface {
 	// Do does the request and parses the body into the response provider if in the 2xx range, otherwise parses it into a glitch.DataError
 	Do(ctx context.Context, method string, slug string, query url.Values, headers http.Header, body io.Reader, response interface{}) glitch.DataError
