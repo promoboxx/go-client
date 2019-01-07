@@ -3,6 +3,12 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "sW3lJK29Em8lFh94EEM2VsudBdM=",
+			"path": "github.com/golang/mock/gomock",
+			"revision": "e698a2ea17fee71b248fc2bba82fc544c2017f93",
+			"revisionTime": "2018-12-21T17:20:59Z"
+		},
+		{
 			"checksumSHA1": "LGWG8O54kxuxOE1cSBkON2fCxzQ=",
 			"path": "github.com/promoboxx/go-glitch/glitch",
 			"revision": "51a5199da5ee0c68ce7b5de13614306314cd31b8",
