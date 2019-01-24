@@ -3,16 +3,82 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "WSdXEmwUgDvqI+8/ZaCnK0g+Kck=",
+			"path": "github.com/Sirupsen/logrus",
+			"revision": "7d8d63893b994a654b3bc8d16ffd7fb6b9f884a4",
+			"revisionTime": "2019-01-22T19:28:20Z"
+		},
+		{
+			"checksumSHA1": "blOHP3HPYU+IeV6yWCalQuuM+zE=",
+			"path": "github.com/dgrijalva/jwt-go",
+			"revision": "3af4c746e1c248ee8491a3e0c6f7a9cd831e95f8",
+			"revisionTime": "2018-09-21T17:23:15Z"
+		},
+		{
 			"checksumSHA1": "sW3lJK29Em8lFh94EEM2VsudBdM=",
 			"path": "github.com/golang/mock/gomock",
 			"revision": "e698a2ea17fee71b248fc2bba82fc544c2017f93",
 			"revisionTime": "2018-12-21T17:20:59Z"
 		},
 		{
+			"checksumSHA1": "yNyE9MrpDJQAxOxSipSIBgBhuNQ=",
+			"path": "github.com/google/uuid",
+			"revision": "9b3b1e0f5f99ae461456d768e7d301a7acdaa2d8",
+			"revisionTime": "2018-09-17T14:00:05Z"
+		},
+		{
+			"checksumSHA1": "PZKEpl0K/e3WxP6tX7k8H4Dc3i8=",
+			"path": "github.com/husobee/vestigo",
+			"revision": "93943aff3f8014c2740dd95ac5db602462162bbe",
+			"revisionTime": "2018-05-14T15:16:41Z"
+		},
+		{
+			"checksumSHA1": "OBvAHqWjdI4NQVAqTkcQAdTuCFY=",
+			"path": "github.com/justinas/alice",
+			"revision": "03f45bd4b7dad4734bc4620e46a35789349abb20",
+			"revisionTime": "2017-10-23T06:44:55Z"
+		},
+		{
+			"checksumSHA1": "UruiaCPpVcDKfBTQhAM6UomufIw=",
+			"path": "github.com/pborman/uuid",
+			"revision": "8b1b92947f46224e3b97bb1a3a5b0382be00d31e",
+			"revisionTime": "2018-09-18T08:52:46Z"
+		},
+		{
 			"checksumSHA1": "LGWG8O54kxuxOE1cSBkON2fCxzQ=",
 			"path": "github.com/promoboxx/go-glitch/glitch",
-			"revision": "51a5199da5ee0c68ce7b5de13614306314cd31b8",
-			"revisionTime": "2018-12-12T22:58:40Z"
+			"revision": "040ea832d91afed0e7e6b5fad7df4f8e8e3bed59",
+			"revisionTime": "2018-12-13T20:25:42Z"
+		},
+		{
+			"checksumSHA1": "tdoU5a+bOChas7MhYtyJ5wu6BBU=",
+			"path": "github.com/promoboxx/go-service/alice/middleware",
+			"revision": "f98d4d1302bc0e95e954f26e7843a9b6eee44001",
+			"revisionTime": "2019-01-24T15:51:33Z"
+		},
+		{
+			"checksumSHA1": "gEFt5rY2vPHGzU71aWf3fYSP1L8=",
+			"path": "github.com/promoboxx/go-service/service",
+			"revision": "f98d4d1302bc0e95e954f26e7843a9b6eee44001",
+			"revisionTime": "2019-01-24T15:51:33Z"
+		},
+		{
+			"checksumSHA1": "BSPDVKviqHQaG2phOFN690zAKB8=",
+			"path": "golang.org/x/crypto/ssh/terminal",
+			"revision": "057139ce5d2bdbe6fe73c53679e24e9cf007f637",
+			"revisionTime": "2019-01-08T20:51:12Z"
+		},
+		{
+			"checksumSHA1": "kukg3DZezN5mPBAaWGUa4bCZCVo=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "b90733256f2e882e81d52f9126de08df5615afd9",
+			"revisionTime": "2019-01-23T07:55:40Z"
+		},
+		{
+			"checksumSHA1": "Y7nctMxT58lRM78VtElPerhcnEs=",
+			"path": "golang.org/x/sys/windows",
+			"revision": "b90733256f2e882e81d52f9126de08df5615afd9",
+			"revisionTime": "2019-01-23T07:55:40Z"
 		}
 	],
 	"rootPath": "github.com/promoboxx/go-client"

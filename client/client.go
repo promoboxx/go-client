@@ -2,17 +2,16 @@ package client
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-
-	"encoding/json"
-
 	"time"
 
 	"github.com/promoboxx/go-glitch/glitch"
+	"github.com/promoboxx/go-service/alice/middleware"
 )
 
 // Error codes
@@ -109,6 +108,12 @@ func (c *client) MakeRequest(ctx context.Context, method string, slug string, qu
 
 	if ctx != nil {
 		req = req.WithContext(ctx)
+
+		// if we have a requestID in the context pass it along in the header
+		requestID := middleware.GetRequestIDFromContext(ctx)
+		if len(requestID) > 0 {
+			req.Header.Set(middleware.HeaderRequestID, requestID)
+		}
 	}
 
 	resp, err := c.client.Do(req)
