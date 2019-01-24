@@ -23,10 +23,27 @@ func ObjectToJSONReader(v interface{}) (io.Reader, glitch.DataError) {
 
 // PrefixRoute is a simple helper function to build the route for service to service communicationfunc PrefixRoute(pathPrefix string, appendServiceNameToRoute bool, route string) string {
 func PrefixRoute(serviceName string, pathPrefix string, appendServiceNameToRoute bool, route string) string {
-	routePrefix := fmt.Sprintf("%s", pathPrefix)
-	if appendServiceNameToRoute {
-		routePrefix = fmt.Sprintf("%s/%s", pathPrefix, serviceName)
+	if !appendServiceNameToRoute && pathPrefix == "" {
+		return normalizePathPart(route)
+	} else if appendServiceNameToRoute && pathPrefix == "" {
+		return fmt.Sprintf("%s%s", normalizePathPart(serviceName), normalizePathPart(route))
+	} else if !appendServiceNameToRoute && pathPrefix != "" {
+		return fmt.Sprintf("%s%s", normalizePathPart(pathPrefix), normalizePathPart(route))
 	}
-	// TODO: make this more robust by normalizing slashes
-	return fmt.Sprintf("%s/%s", routePrefix, route)
+
+	return fmt.Sprintf("%s%s%s", normalizePathPart(pathPrefix), normalizePathPart(serviceName), normalizePathPart(route))
+}
+
+func normalizePathPart(route string) string {
+	// if there is a trailing / delete it
+	if string(route[len(route)-1]) == "/" {
+		route = route[:len(route)-1]
+	}
+
+	// if there already is a prepended / just return otherwise add one
+	if string(route[0]) == "/" {
+		return route
+	}
+
+	return fmt.Sprintf("/%s", route)
 }
