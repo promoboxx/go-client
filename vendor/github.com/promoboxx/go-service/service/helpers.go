@@ -5,25 +5,32 @@ import (
 	"net/http"
 
 	"github.com/promoboxx/go-glitch/glitch"
+	"github.com/promoboxx/go-service/alice/middleware/lrw"
 )
 
 // ReturnProblem will return a json http problem response
-func ReturnProblem(w http.ResponseWriter, detail, code string, status int) (int, []byte) {
+func ReturnProblem(w http.ResponseWriter, detail, code string, status int, innerErr error) (int, []byte) {
 	prob := glitch.HTTPProblem{
 		Title:  http.StatusText(status),
 		Detail: detail,
 		Code:   code,
 		Status: status,
 	}
+
+	if loggingResponseWriter, ok := w.(*lrw.LoggingResponseWriter); ok {
+		loggingResponseWriter.InnerError = innerErr
+	}
+
 	by, _ := json.Marshal(prob)
 	if w != nil {
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	}
+
 	return status, by
 }
 
 // WriteProblem will write a json http problem response
-func WriteProblem(w http.ResponseWriter, detail, code string, status int) error {
+func WriteProblem(w http.ResponseWriter, detail, code string, status int, innerErr error) error {
 	prob := glitch.HTTPProblem{
 		Title:  http.StatusText(status),
 		Detail: detail,
@@ -34,6 +41,11 @@ func WriteProblem(w http.ResponseWriter, detail, code string, status int) error 
 	if err != nil {
 		return err
 	}
+
+	if lrw, ok := w.(*lrw.LoggingResponseWriter); ok {
+		lrw.InnerError = innerErr
+	}
+
 	if w != nil {
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(status)
