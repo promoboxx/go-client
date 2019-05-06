@@ -10,6 +10,8 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/opentracing/opentracing-go"
+
 	"github.com/promoboxx/go-glitch/glitch"
 	"github.com/promoboxx/go-service/alice/middleware"
 )
@@ -107,6 +109,10 @@ func (c *client) MakeRequest(ctx context.Context, method string, slug string, qu
 	req.Header = headers
 
 	if ctx != nil {
+		span := opentracing.SpanFromContext(ctx)
+		childSpan := opentracing.StartSpan(fmt.Sprintf("%s-client %s %s", c.serviceName, method, slug), opentracing.ChildOf(span.Context()))
+		defer childSpan.Finish()
+		opentracing.GlobalTracer().Inject(childSpan.Context(), opentracing.HTTPHeaders, req.Header)
 		req = req.WithContext(ctx)
 
 		// if we have a requestID in the context pass it along in the header
