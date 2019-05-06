@@ -110,8 +110,16 @@ func (c *client) MakeRequest(ctx context.Context, method string, slug string, qu
 
 	if ctx != nil {
 		span := opentracing.SpanFromContext(ctx)
-		childSpan := opentracing.StartSpan(fmt.Sprintf("%s-client %s %s", c.serviceName, method, slug), opentracing.ChildOf(span.Context()))
-		defer childSpan.Finish()
+		operation := fmt.Sprintf("%s-client %s %s", c.serviceName, method, slug)
+		var childSpan opentracing.Span
+		if span != nil {
+			childSpan = opentracing.StartSpan(operation, opentracing.ChildOf(span.Context()))
+			defer childSpan.Finish()
+		} else {
+			span = opentracing.StartSpan(operation)
+			defer span.Finish()
+		}
+
 		opentracing.GlobalTracer().Inject(childSpan.Context(), opentracing.HTTPHeaders, req.Header)
 		req = req.WithContext(ctx)
 
