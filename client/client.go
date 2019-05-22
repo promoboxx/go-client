@@ -74,7 +74,10 @@ func (c *client) Do(ctx context.Context, method string, slug string, query url.V
 		if err != nil {
 			return glitch.NewDataError(err, ErrorRequestError, "Could not decode error response")
 		}
-		return glitch.FromHTTPProblem(prob, fmt.Sprintf("Error from %s to %s - %s", method, c.serviceName, slug))
+
+		problem := glitch.FromHTTPProblem(prob, fmt.Sprintf("Error from %s to %s - %s", method, c.serviceName, slug))
+		problem.AddField("status.http", status)
+		return problem
 	}
 
 	if response != nil {
