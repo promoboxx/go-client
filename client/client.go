@@ -155,6 +155,8 @@ func (c *client) makeRequest(ctx context.Context, method string, slug string, qu
 			defer span.Finish()
 		}
 
+		span.SetTag("slug", slug)
+
 		req = req.WithContext(ctx)
 
 		// if we have a requestID in the context pass it along in the header
