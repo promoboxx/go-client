@@ -62,7 +62,31 @@ func NewBaseClient(finder ServiceFinder, serviceName string, useTLS bool, timeou
 	return &client{finder: finder, serviceName: serviceName, useTLS: useTLS, client: c}
 }
 
+// Do does the request and parses the body into the response provider if in the 2xx range, otherwise parses it into a glitch.DataError
 func (c *client) Do(ctx context.Context, method string, slug string, query url.Values, headers http.Header, body io.Reader, response interface{}) glitch.DataError {
+	return c.do(ctx, method, slug, query, headers, body, response, nil)
+}
+
+// Do does the request and parses the body into the response provider if in the 2xx range, otherwise parses it into a glitch.DataError
+// The name arg will be used to assign the name of the span that is in the client
+func (c *client) DoWithName(ctx context.Context, method string, slug string, query url.Values, headers http.Header, body io.Reader, response interface{}, name string) glitch.DataError {
+	return c.do(ctx, method, slug, query, headers, body, response, nil)
+}
+
+// MakeRequest does the request and returns the status, body, and any error
+// This should be used only if the api doesn't return glitch.DataErrors
+func (c *client) MakeRequest(ctx context.Context, method string, slug string, query url.Values, headers http.Header, body io.Reader) (int, []byte, glitch.DataError) {
+	return c.makeRequest(ctx, method, slug, query, headers, body, nil)
+}
+
+// MakeRequest does the request and returns the status, body, and any error
+// This should be used only if the api doesn't return glitch.DataErrors
+// The name arg will be used to assign the name of the span that is in the client
+func (c *client) MakeRequestWithName(ctx context.Context, method string, slug string, query url.Values, headers http.Header, body io.Reader, name string) (int, []byte, glitch.DataError) {
+	return c.makeRequest(ctx, method, slug, query, headers, body, &name)
+}
+
+func (c *client) do(ctx context.Context, method string, slug string, query url.Values, headers http.Header, body io.Reader, response interface{}, name *string) glitch.DataError {
 	status, ret, err := c.MakeRequest(ctx, method, slug, query, headers, body)
 	if err != nil {
 		return err
@@ -87,7 +111,7 @@ func (c *client) Do(ctx context.Context, method string, slug string, query url.V
 	return nil
 }
 
-func (c *client) MakeRequest(ctx context.Context, method string, slug string, query url.Values, headers http.Header, body io.Reader) (int, []byte, glitch.DataError) {
+func (c *client) makeRequest(ctx context.Context, method string, slug string, query url.Values, headers http.Header, body io.Reader, name *string) (int, []byte, glitch.DataError) {
 	rawURL, err := c.finder(c.serviceName)
 	if err != nil {
 		return 0, nil, glitch.NewDataError(err, ErrorCantFind, "Error finding service")
@@ -110,16 +134,28 @@ func (c *client) MakeRequest(ctx context.Context, method string, slug string, qu
 
 	if ctx != nil {
 		span := opentracing.SpanFromContext(ctx)
-		operation := fmt.Sprintf("%s-client %s %s", c.serviceName, method, slug)
+
+		// check if a name was set, if there was no name set
+		// default to method and service name
+		// span name cannot be more than 100 characters
+		if name == nil {
+			tmp := fmt.Sprintf("%s %s", method, c.serviceName)
+			name = &tmp
+		}
+
+		// create the child span that will correlate to the
+		// parent span if one exists
 		var childSpan opentracing.Span
 		if span != nil {
-			childSpan = opentracing.StartSpan(operation, opentracing.ChildOf(span.Context()))
+			childSpan = opentracing.StartSpan(*name, opentracing.ChildOf(span.Context()))
 			defer childSpan.Finish()
 			opentracing.GlobalTracer().Inject(childSpan.Context(), opentracing.HTTPHeaders, req.Header)
 		} else {
-			span = opentracing.StartSpan(operation)
+			span = opentracing.StartSpan(*name)
 			defer span.Finish()
 		}
+
+		span.SetTag("slug", slug)
 
 		req = req.WithContext(ctx)
 
