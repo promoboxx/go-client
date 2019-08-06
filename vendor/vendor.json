@@ -3,12 +3,6 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "WSdXEmwUgDvqI+8/ZaCnK0g+Kck=",
-			"path": "github.com/Sirupsen/logrus",
-			"revision": "7d8d63893b994a654b3bc8d16ffd7fb6b9f884a4",
-			"revisionTime": "2019-01-22T19:28:20Z"
-		},
-		{
 			"checksumSHA1": "blOHP3HPYU+IeV6yWCalQuuM+zE=",
 			"path": "github.com/dgrijalva/jwt-go",
 			"revision": "3af4c746e1c248ee8491a3e0c6f7a9cd831e95f8",
@@ -37,6 +31,18 @@
 			"path": "github.com/justinas/alice",
 			"revision": "03f45bd4b7dad4734bc4620e46a35789349abb20",
 			"revisionTime": "2017-10-23T06:44:55Z"
+		},
+		{
+			"checksumSHA1": "6EIQaeaWECn3zlechdGkqmIKld4=",
+			"path": "github.com/opentracing/opentracing-go",
+			"revision": "659c90643e714681897ec2521c60567dd21da733",
+			"revisionTime": "2019-03-23T20:25:03Z"
+		},
+		{
+			"checksumSHA1": "tnkdNJbJxNKuPZMWapP1xhKIIGw=",
+			"path": "github.com/opentracing/opentracing-go/log",
+			"revision": "659c90643e714681897ec2521c60567dd21da733",
+			"revisionTime": "2019-03-23T20:25:03Z"
 		},
 		{
 			"checksumSHA1": "UruiaCPpVcDKfBTQhAM6UomufIw=",
@@ -69,10 +75,10 @@
 			"revisionTime": "2019-01-24T16:56:11Z"
 		},
 		{
-			"checksumSHA1": "PxrNiZqn/VZ27XkKnatmAkNUZ9k=",
+			"checksumSHA1": "mB5o9lbse489BCvZGbRkarc2Xp0=",
 			"path": "github.com/sirupsen/logrus",
-			"revision": "4ea4861398d99a2d05be29675c5b74caf7bea95e",
-			"revisionTime": "2019-01-29T18:29:38Z"
+			"revision": "9b3cdde74fbe9443d704467498a7dcb61a79de9b",
+			"revisionTime": "2019-04-03T09:10:19Z"
 		},
 		{
 			"checksumSHA1": "CVmt+DETeuUZkKC6MUJbTqc/iYU=",
