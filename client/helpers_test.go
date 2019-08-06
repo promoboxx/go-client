@@ -62,7 +62,7 @@ func TestUnit_PrefixRoute(t *testing.T) {
 	}
 
 	tests := []testCase{
-		testCase{
+		{
 			name:                     "base path",
 			serviceName:              "foo-service",
 			pathPrefix:               "foo-prefix",
@@ -70,7 +70,7 @@ func TestUnit_PrefixRoute(t *testing.T) {
 			route:                    "foo-route",
 			expected:                 "/foo-prefix/foo-service/foo-route",
 		},
-		testCase{
+		{
 			name:                     "alternate path no service name in route",
 			serviceName:              "foo-service",
 			pathPrefix:               "foo-prefix",
@@ -78,7 +78,7 @@ func TestUnit_PrefixRoute(t *testing.T) {
 			route:                    "foo-route",
 			expected:                 "/foo-prefix/foo-route",
 		},
-		testCase{
+		{
 			name:                     "alternate path just route",
 			serviceName:              "foo-service",
 			pathPrefix:               "",
@@ -86,7 +86,7 @@ func TestUnit_PrefixRoute(t *testing.T) {
 			route:                    "foo-route",
 			expected:                 "/foo-route",
 		},
-		testCase{
+		{
 			name:                     "alternate path no path prefix",
 			serviceName:              "foo-service",
 			pathPrefix:               "",
