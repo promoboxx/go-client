@@ -39,6 +39,18 @@
 			"revisionTime": "2017-10-23T06:44:55Z"
 		},
 		{
+			"checksumSHA1": "6EIQaeaWECn3zlechdGkqmIKld4=",
+			"path": "github.com/opentracing/opentracing-go",
+			"revision": "659c90643e714681897ec2521c60567dd21da733",
+			"revisionTime": "2019-03-23T20:25:03Z"
+		},
+		{
+			"checksumSHA1": "tnkdNJbJxNKuPZMWapP1xhKIIGw=",
+			"path": "github.com/opentracing/opentracing-go/log",
+			"revision": "659c90643e714681897ec2521c60567dd21da733",
+			"revisionTime": "2019-03-23T20:25:03Z"
+		},
+		{
 			"checksumSHA1": "UruiaCPpVcDKfBTQhAM6UomufIw=",
 			"path": "github.com/pborman/uuid",
 			"revision": "8b1b92947f46224e3b97bb1a3a5b0382be00d31e",
