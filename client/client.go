@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/opentracing/opentracing-go"
-
 	"github.com/promoboxx/go-glitch/glitch"
 	"github.com/promoboxx/go-service/alice/middleware"
 )
@@ -130,7 +129,11 @@ func (c *client) makeRequest(ctx context.Context, method string, slug string, qu
 		return 0, nil, glitch.NewDataError(err, ErrorRequestCreation, "Error creating request object")
 	}
 
-	req.Header = headers
+	if headers != nil {
+		req.Header = headers
+	} else {
+		req.Header = http.Header{}
+	}
 
 	if ctx != nil {
 		span := opentracing.SpanFromContext(ctx)
