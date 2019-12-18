@@ -84,7 +84,7 @@ type TestHelper interface {
 // defer.
 //
 //   func TestFoo(t *testing.T) {
-//     ctrl := gomock.NewController(st)
+//     ctrl := gomock.NewController(t)
 //     defer ctrl.Finish()
 //     // ..
 //   }
@@ -105,7 +105,7 @@ type Controller struct {
 	// T should only be called within a generated mock. It is not intended to
 	// be used in user code and may be changed in future versions. T is the
 	// TestReporter passed in when creating the Controller via NewController.
-	// If the TestReporter does not implment a TestHelper it will be wrapped
+	// If the TestReporter does not implement a TestHelper it will be wrapped
 	// with a nopTestHelper.
 	T             TestHelper
 	mu            sync.Mutex
