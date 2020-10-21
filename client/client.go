@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -48,11 +49,15 @@ type client struct {
 }
 
 // NewBaseClient creates a new BaseClient
-func NewBaseClient(finder ServiceFinder, serviceName string, useTLS bool, timeout time.Duration, rt http.RoundTripper) BaseClient {
+func NewBaseClient(finder ServiceFinder, serviceName string, useTLS bool, timeout time.Duration, tlsConfig *tls.Config) BaseClient {
+	rt := http.DefaultTransport
 
-	if rt == nil {
-		rt = http.DefaultTransport
+	if useTLS && tlsConfig != nil {
+		rt = &http.Transport{
+			TLSClientConfig: tlsConfig,
+		}
 	}
+
 	c := &http.Client{
 		Timeout:   timeout,
 		Transport: rt,
@@ -69,7 +74,7 @@ func (c *client) Do(ctx context.Context, method string, slug string, query url.V
 // Do does the request and parses the body into the response provider if in the 2xx range, otherwise parses it into a glitch.DataError
 // The name arg will be used to assign the name of the span that is in the client
 func (c *client) DoWithName(ctx context.Context, method string, slug string, query url.Values, headers http.Header, body io.Reader, response interface{}, name string) glitch.DataError {
-	return c.do(ctx, method, slug, query, headers, body, response, nil)
+	return c.do(ctx, method, slug, query, headers, body, response, &name)
 }
 
 // MakeRequest does the request and returns the status, body, and any error
@@ -86,7 +91,18 @@ func (c *client) MakeRequestWithName(ctx context.Context, method string, slug st
 }
 
 func (c *client) do(ctx context.Context, method string, slug string, query url.Values, headers http.Header, body io.Reader, response interface{}, name *string) glitch.DataError {
-	status, ret, err := c.MakeRequest(ctx, method, slug, query, headers, body)
+	var (
+		status int
+		ret    []byte
+		err    glitch.DataError
+	)
+
+	if name != nil {
+		status, ret, err = c.MakeRequestWithName(ctx, method, slug, query, headers, body, *name)
+	} else {
+		status, ret, err = c.MakeRequest(ctx, method, slug, query, headers, body)
+	}
+
 	if err != nil {
 		return err
 	}

@@ -17,6 +17,7 @@ package gomock
 import (
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 // A Matcher is a representation of a class of values.
@@ -88,7 +89,7 @@ func GotFormatterAdapter(s GotFormatter, m Matcher) Matcher {
 
 type anyMatcher struct{}
 
-func (anyMatcher) Matches(x interface{}) bool {
+func (anyMatcher) Matches(interface{}) bool {
 	return true
 }
 
@@ -154,7 +155,50 @@ func (m assignableToTypeOfMatcher) String() string {
 	return "is assignable to " + m.targetType.Name()
 }
 
+type allMatcher struct {
+	matchers []Matcher
+}
+
+func (am allMatcher) Matches(x interface{}) bool {
+	for _, m := range am.matchers {
+		if !m.Matches(x) {
+			return false
+		}
+	}
+	return true
+}
+
+func (am allMatcher) String() string {
+	ss := make([]string, 0, len(am.matchers))
+	for _, matcher := range am.matchers {
+		ss = append(ss, matcher.String())
+	}
+	return strings.Join(ss, "; ")
+}
+
+type lenMatcher struct {
+	i int
+}
+
+func (m lenMatcher) Matches(x interface{}) bool {
+	v := reflect.ValueOf(x)
+	switch v.Kind() {
+	case reflect.Array, reflect.Chan, reflect.Map, reflect.Slice, reflect.String:
+		return v.Len() == m.i
+	default:
+		return false
+	}
+}
+
+func (m lenMatcher) String() string {
+	return fmt.Sprintf("has length %d", m.i)
+}
+
 // Constructors
+
+// All returns a composite Matcher that returns true if and only all of the
+// matchers return true.
+func All(ms ...Matcher) Matcher { return allMatcher{ms} }
 
 // Any returns a matcher that always matches.
 func Any() Matcher { return anyMatcher{} }
@@ -165,6 +209,12 @@ func Any() Matcher { return anyMatcher{} }
 //   Eq(5).Matches(5) // returns true
 //   Eq(5).Matches(4) // returns false
 func Eq(x interface{}) Matcher { return eqMatcher{x} }
+
+// Len returns a matcher that matches on length. This matcher returns false if
+// is compared to a type that is not an array, chan, map, slice, or string.
+func Len(i int) Matcher {
+	return lenMatcher{i}
+}
 
 // Nil returns a matcher that matches if the received value is nil.
 //
@@ -194,6 +244,12 @@ func Not(x interface{}) Matcher {
 //   var s fmt.Stringer = &bytes.Buffer{}
 //   AssignableToTypeOf(s).Matches(time.Second) // returns true
 //   AssignableToTypeOf(s).Matches(99) // returns false
+//
+//   var ctx = reflect.TypeOf((*context.Context)).Elem()
+//   AssignableToTypeOf(ctx).Matches(context.Background()) // returns true
 func AssignableToTypeOf(x interface{}) Matcher {
+	if xt, ok := x.(reflect.Type); ok {
+		return assignableToTypeOfMatcher{xt}
+	}
 	return assignableToTypeOfMatcher{reflect.TypeOf(x)}
 }

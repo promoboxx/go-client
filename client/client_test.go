@@ -32,7 +32,7 @@ func TestUnit_Do(t *testing.T) {
 		expectedErr      error
 	}
 
-	testServer := httptest.NewServer(http.HandlerFunc((func(w http.ResponseWriter, r *http.Request) {
+	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/1":
 			fmt.Fprintf(w, `{"foo":"bar"}`)
@@ -59,7 +59,7 @@ func TestUnit_Do(t *testing.T) {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, string(by))
 		}
-	})))
+	}))
 	defer testServer.Close()
 
 	finder := func(serviceName string) (string, error) {
