@@ -28,6 +28,7 @@ workflows:
   test:
     jobs:
       - test:
+          context: "dockerhub"
           filters:
             branches:
               ignore: master
