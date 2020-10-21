@@ -6,11 +6,28 @@ import (
 	"net/http"
 	"strings"
 
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/promoboxx/go-service/alice/middleware/contextkey"
 )
 
-// UserIDInjector add the user id to the context this is not validated for perf reasons
-func UserIDInjector(h http.Handler) http.Handler {
+type JWTDecoder interface {
+	DecodeSegment(seg string) ([]byte, error)
+}
+
+// UserIDIngector injects a UserID from a JWT into the context
+type UserIDIngector interface {
+	Inject(h http.Handler) http.Handler
+}
+
+type userIDInjector struct {
+	jwtDecoder JWTDecoder
+}
+
+// NewLogrusLogger allows you to setup a base entry to use for logging
+func NewUserIDInjector(jwt JWTDecoder) UserIDIngector {
+	return &userIDInjector{jwtDecoder: jwt}
+}
+
+func (u *userIDInjector) Inject(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var userID string
 		t := r.Header.Get("Authorization")
@@ -18,7 +35,7 @@ func UserIDInjector(h http.Handler) http.Handler {
 		parts := strings.Split(t, ".")
 
 		if len(parts) == 3 {
-			by, err := jwt.DecodeSegment(parts[1])
+			by, err := u.jwtDecoder.DecodeSegment(parts[1])
 			if err == nil {
 				claims := make(map[string]interface{})
 				err = json.Unmarshal(by, &claims)
@@ -34,7 +51,7 @@ func UserIDInjector(h http.Handler) http.Handler {
 		}
 
 		// add userID to the context
-		ctx := context.WithValue(r.Context(), contextKeyInsecureUserID, userID)
+		ctx := context.WithValue(r.Context(), contextkey.ContextKeyInsecureUserID, userID)
 		r = r.WithContext(ctx)
 		h.ServeHTTP(w, r)
 	})

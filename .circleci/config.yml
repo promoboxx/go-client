@@ -2,30 +2,33 @@ version: 2.1
 jobs:
   test:
     docker:
-      - image: circleci/golang:1.12
+      - image: pbxx/go-docker-base:master-latest
+        auth:
+          username: $DOCKER_LOGIN
+          password: $DOCKER_PASSWORD
     working_directory: /go/src/github.com/promoboxx/go-client
     steps:
       - checkout
       - run:
           name: golint
           command: |
-            go get -u golang.org/x/lint/golint
+            GO111MODULE=off go get -u golang.org/x/lint/golint
             golint ./client/...
       - run:
           name: go vet
-          command: go vet ./client/...
+          command: go vet -mod vendor ./client/...
       - run:
           name: gofmt
           command: test -z "$(gofmt -s -l client)"
       - run:
           name: go test
-          command: go test -v -cover -run Unit ./client/...
+          command: go test -mod vendor -v -cover -run Unit ./client/...
 workflows:
   version: 2
   test:
     jobs:
       - test:
+          context: "dockerhub"
           filters:
             branches:
               ignore: master
-      
