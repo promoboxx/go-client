@@ -108,7 +108,7 @@ func (c *client) do(ctx context.Context, method string, slug string, query url.V
 	}
 
 	if status >= 400 || status < 200 {
-		prob := glitch.HTTPProblem{}
+		prob := &glitch.HTTPProblem{}
 		err := json.Unmarshal(ret, &prob)
 		if err != nil {
 			return glitch.NewDataError(err, ErrorRequestError, "Could not decode error response")

@@ -100,7 +100,7 @@ func TestUnit_Do(t *testing.T) {
 			client:      NewBaseClient(finder, "foo", false, 10*time.Second, nil),
 			method:      "GET",
 			slug:        "3",
-			expectedErr: glitch.FromHTTPProblem(glitch.HTTPProblem{Code: "FOOBAR", Status: 500, Detail: "test error"}, "Error from GET to foo - 3"),
+			expectedErr: glitch.FromHTTPProblem(&glitch.HTTPProblem{Code: "FOOBAR", Status: 500, Detail: "test error"}, "Error from GET to foo - 3"),
 		},
 	}
 
