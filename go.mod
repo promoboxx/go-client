@@ -1,6 +1,6 @@
 module github.com/promoboxx/go-client
 
-go 1.23.1
+go 1.22.1
 
 require (
 	github.com/golang/mock v1.4.4
