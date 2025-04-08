@@ -1,8 +1,5 @@
 version: 2.1
 
-orbs:
-  go-service: promoboxx/go-service@dev:add-go-orb
-
 jobs:
   test:
     docker:
@@ -22,12 +19,6 @@ workflows:
     jobs:
       - test:
           context: "dockerhub"
-          filters:
-            branches:
-              ignore: master
-      - go-service/lint:
-          context: "dockerhub"
-          project_name: go-client
           filters:
             branches:
               ignore: master
