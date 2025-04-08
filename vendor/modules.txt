@@ -1,23 +1,32 @@
 # github.com/golang/mock v1.4.4
+## explicit; go 1.11
 github.com/golang/mock/gomock
 # github.com/google/uuid v1.1.2
+## explicit
 github.com/google/uuid
 # github.com/husobee/vestigo v1.1.1
+## explicit
 github.com/husobee/vestigo
 # github.com/justinas/alice v1.2.0
+## explicit; go 1.12
 github.com/justinas/alice
 # github.com/opentracing/opentracing-go v1.2.0
+## explicit; go 1.14
 github.com/opentracing/opentracing-go
 github.com/opentracing/opentracing-go/log
 # github.com/promoboxx/go-glitch v0.0.0-20200611152243-b7ba80beda4f
+## explicit
 github.com/promoboxx/go-glitch/glitch
 # github.com/promoboxx/go-service v0.0.0-20200721193513-5a394bd6fdaa
+## explicit
 github.com/promoboxx/go-service/alice/middleware
 github.com/promoboxx/go-service/alice/middleware/contextkey
 github.com/promoboxx/go-service/alice/middleware/lrw
 github.com/promoboxx/go-service/service
 # github.com/sirupsen/logrus v1.7.0
+## explicit; go 1.13
 github.com/sirupsen/logrus
 # golang.org/x/sys v0.0.0-20191026070338-33540a1f6037
+## explicit; go 1.12
 golang.org/x/sys/unix
 golang.org/x/sys/windows
