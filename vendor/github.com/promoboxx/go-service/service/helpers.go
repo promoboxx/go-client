@@ -57,6 +57,8 @@ func WriteProblem(w http.ResponseWriter, detail, code string, status int, innerE
 
 	if lrw, ok := w.(*lrw.LoggingResponseWriter); ok {
 		lrw.InnerError = innerErr
+		lrw.AddLogField("error_code", code)
+		lrw.AddLogField("error_detail", detail)
 	}
 
 	if w != nil {
@@ -65,6 +67,47 @@ func WriteProblem(w http.ResponseWriter, detail, code string, status int, innerE
 		_, err = w.Write(by)
 	}
 	return err
+}
+
+// WriteProblemWithMetadata writes a normal http problem but will also add metadata to the response
+func WriteProblemWithMetadata(w http.ResponseWriter, detail, code string, status int, innerErr error, metadata interface{}) error {
+	prob := glitch.HTTPProblemMetadata{
+		HTTPProblem: glitch.HTTPProblem{
+			Title:  http.StatusText(status),
+			Detail: detail,
+			Code:   code,
+			Status: status,
+		},
+		Metadata: metadata,
+	}
+
+	if dataErr, ok := innerErr.(glitch.DataError); ok {
+		prob.IsTransient = dataErr.IsTransient()
+	}
+
+	by, err := json.Marshal(prob)
+	if err != nil {
+		return err
+	}
+
+	if lrw, ok := w.(*lrw.LoggingResponseWriter); ok {
+		lrw.InnerError = innerErr
+		lrw.AddLogField("error_code", code)
+		lrw.AddLogField("error_detail", detail)
+	}
+
+	if w != nil {
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(status)
+		_, err = w.Write(by)
+	}
+	return err
+}
+
+// Writes the given error as a json http problem response to the `http.ResponseWriter`, and
+// returns the raw error
+func WriteDataError(w http.ResponseWriter, err glitch.DataError, status int) error {
+	return WriteProblem(w, err.Msg(), err.Code(), status, err.Inner())
 }
 
 // WriteJSONResponse will write a json response to the htt.ResponseWriter
@@ -115,6 +158,24 @@ func Int64ArrayFromQueryParam(r *http.Request, paramName string) ([]int64, error
 		ret = append(ret, i)
 	}
 	return ret, nil
+}
+
+func Int32ArrayFromQueryParam(r *http.Request, paramName string) ([]int32, error) {
+	var result []int32
+	str := r.URL.Query().Get(paramName)
+	if len(str) == 0 {
+		return result, nil
+	}
+	parts := strings.Split(str, ",")
+
+	for _, v := range parts {
+		i64, err := strconv.ParseInt(v, 10, 32)
+		if err != nil {
+			return nil, fmt.Errorf("%s is not an integer", v)
+		}
+		result = append(result, int32(i64))
+	}
+	return result, nil
 }
 
 func TimestampFromQueryParam(r *http.Request, paramName string) (*time.Time, error) {

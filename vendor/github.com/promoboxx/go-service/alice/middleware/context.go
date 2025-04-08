@@ -2,7 +2,9 @@ package middleware
 
 import (
 	"context"
+	"database/sql"
 
+	"github.com/promoboxx/go-auth/src/auth"
 	"github.com/promoboxx/go-service/alice/middleware/contextkey"
 	"github.com/sirupsen/logrus"
 )
@@ -33,4 +35,24 @@ func GetLoggerFromContext(ctx context.Context) *logrus.Entry {
 		return entry
 	}
 	return logrus.NewEntry(logrus.New()) // default to a new entry
+}
+
+func GetClaimsFromContext(ctx context.Context) auth.Claim {
+	return ctx.Value(contextkey.ContextKeyClaims).(auth.Claim)
+}
+
+func GetDBConnFromContext(ctx context.Context) *sql.DB {
+	return ctx.Value(contextkey.ContextKeyDBConn).(*sql.DB)
+}
+
+func GetDBFromContext[T any](ctx context.Context, f func(*sql.DB) T) T {
+	if ctx.Value(contextkey.ContextKeyDB) == nil {
+		return f(GetDBConnFromContext(ctx))
+	}
+
+	return ctx.Value(contextkey.ContextKeyDB).(T)
+}
+
+func GetCanaryVersionFromContext(ctx context.Context) string {
+	return getStringFromContext(ctx, contextkey.ContextKeyCanary)
 }

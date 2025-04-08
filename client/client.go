@@ -133,8 +133,8 @@ func (c *client) makeRequest(ctx context.Context, method string, slug string, qu
 		return 0, nil, glitch.NewDataError(err, ErrorCantFind, "Error finding service")
 	}
 
-	if canaryVersion := middleware.GetCanaryVersionFromContext(); canaryVersion != "" {
-		headers.Add(middleware.HeaderCanaryVersion)
+	if canaryVersion := middleware.GetCanaryVersionFromContext(ctx); canaryVersion != "" {
+		headers.Add(middleware.HeaderCanaryVersion, canaryVersion)
 	}
 
 	u, err := url.Parse(rawURL)

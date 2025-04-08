@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"runtime"
 
+	"github.com/honeybadger-io/honeybadger-go"
 	"github.com/promoboxx/go-service/service"
 )
 
@@ -18,6 +19,8 @@ func Recovery(h http.Handler) http.Handler {
 				log := GetLoggerFromContext(r.Context())
 				stack := stack(3)
 				log.Printf("PANIC: %s\n%s", err, stack)
+
+				honeybadger.Notify(err)
 
 				service.WriteProblem(w, "An error occurred service your request.", "ERROR_SERVICE", http.StatusInternalServerError, nil)
 			}
@@ -34,6 +37,10 @@ var (
 	dot       = []byte(".")
 	slash     = []byte("/")
 )
+
+func GetStack(skip int) []byte {
+	return stack(skip)
+}
 
 // stack returns a nicely formated stack frame, skipping skip frames
 func stack(skip int) []byte {
