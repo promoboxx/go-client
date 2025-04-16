@@ -23,6 +23,8 @@ type DataError interface {
 	IsTransient() bool
 	// GetFields returns the extra fields for giving better error descriptions
 	GetFields() map[string]interface{}
+	// GetField returns the data of a field from the fields member of the DataError if one exists
+	GetField(name string) interface{}
 	// AddFields will add fields to the given DataErrors fields
 	AddFields(map[string]interface{})
 	// AddField will add the key and value pair to the data errors fields
@@ -62,6 +64,10 @@ func (d *dataError) Wrap(err DataError) DataError {
 }
 
 func (d *dataError) GetCause() DataError {
+	if d.cause == nil {
+		return d
+	}
+
 	return d.cause
 }
 
@@ -71,6 +77,10 @@ func (d *dataError) IsTransient() bool {
 
 func (d *dataError) GetFields() map[string]interface{} {
 	return d.fields
+}
+
+func (d *dataError) GetField(name string) interface{} {
+	return d.fields[name]
 }
 
 // AddFields adds the given fields to the data error
@@ -92,9 +102,13 @@ func (d *dataError) String() string {
 
 // FromHTTPProblem will create a DataError from an HTTPProblem
 func FromHTTPProblem(inner error, msg string) DataError {
-	if httpProblem, ok := inner.(HTTPProblem); ok {
-		return &dataError{inner: inner, code: httpProblem.Code, msg: msg, isTransient: httpProblem.IsTransient}
+	switch ie := inner.(type) {
+	case HTTPProblem:
+		return &dataError{inner: inner, code: ie.Code, msg: msg, isTransient: ie.IsTransient}
+	case HTTPProblemMetadata:
+		return &dataError{inner: inner, code: ie.Code, msg: msg, isTransient: ie.IsTransient, fields: map[string]interface{}{"metadata": ie.Metadata}}
 	}
+
 	return &dataError{inner: inner, code: UnknownCode, msg: msg}
 }
 

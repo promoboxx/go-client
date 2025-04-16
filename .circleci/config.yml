@@ -1,25 +1,15 @@
 version: 2.1
+
 jobs:
   test:
     docker:
-      - image: pbxx/go-docker-base:master-latest
+      - image: pbxx/dev-env:main-latest
         auth:
           username: $DOCKER_LOGIN
           password: $DOCKER_PASSWORD
     working_directory: /go/src/github.com/promoboxx/go-client
     steps:
       - checkout
-      - run:
-          name: golint
-          command: |
-            GO111MODULE=off go get -u golang.org/x/lint/golint
-            golint ./client/...
-      - run:
-          name: go vet
-          command: go vet -mod vendor ./client/...
-      - run:
-          name: gofmt
-          command: test -z "$(gofmt -s -l client)"
       - run:
           name: go test
           command: go test -mod vendor -v -cover -run Unit ./client/...

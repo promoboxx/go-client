@@ -75,6 +75,7 @@ func TestUnit_Do(t *testing.T) {
 			slug:             "1",
 			response:         new(map[string]string),
 			expectedResponse: &map[string]string{"foo": "bar"},
+			ctx:              context.Background(),
 		},
 		{
 			name:             "POST",
@@ -84,6 +85,7 @@ func TestUnit_Do(t *testing.T) {
 			body:             bytes.NewBuffer([]byte(`{"test":true}`)),
 			response:         new(map[string]string),
 			expectedResponse: &map[string]string{"foo": "bar"},
+			ctx:              context.Background(),
 		},
 		{
 			name:             "POST2",
@@ -94,6 +96,7 @@ func TestUnit_Do(t *testing.T) {
 			body:             bytes.NewBuffer([]byte(`{"test":false}`)),
 			response:         new(map[string]string),
 			expectedResponse: &map[string]string{"foo": "baz"},
+			ctx:              context.Background(),
 		},
 		{
 			name:        "error",
@@ -101,6 +104,7 @@ func TestUnit_Do(t *testing.T) {
 			method:      "GET",
 			slug:        "3",
 			expectedErr: glitch.FromHTTPProblem(glitch.HTTPProblem{Code: "FOOBAR", Status: 500, Detail: "test error"}, "Error from GET to foo - 3"),
+			ctx:         context.Background(),
 		},
 	}
 
